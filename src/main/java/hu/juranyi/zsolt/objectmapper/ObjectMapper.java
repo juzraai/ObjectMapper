@@ -91,7 +91,7 @@ public class ObjectMapper {
 			}
 			return o;
 		} catch (Exception ex) {
-			System.out.println("Could not get property: " + property);
+			// System.out.println("Could not get property: " + property);
 			return null;
 		}
 	}
@@ -272,7 +272,7 @@ public class ObjectMapper {
 
 			return true;
 		} catch (Exception ex) {
-			System.out.println("Could not set property: " + property);
+			// System.out.println("Could not set property: " + property);
 			return false;
 		}
 	}
