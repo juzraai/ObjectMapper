@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="ObjectMapper : Properties in Java! ;-)" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>ObjectMapper</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/juzraai/ObjectMapper">View on GitHub</a>
+
+          <h1 id="project_title">ObjectMapper</h1>
+          <h2 id="project_tagline">Properties in Java! ;-)</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/juzraai/ObjectMapper/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/juzraai/ObjectMapper/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>
+<a name="objectmapper" class="anchor" href="#objectmapper"><span class="octicon octicon-link"></span></a>ObjectMapper</h1>
+
+<p><strong>Properties in Java! ;-)</strong></p>
+
+<hr><h2>
+<a name="1-whats-this" class="anchor" href="#1-whats-this"><span class="octicon octicon-link"></span></a>1. What's this?</h2>
+
+<p><em>ObjectMapper</em> helps you simplify the handling of nested beans, by providing getter and setter methods which work with property names.</p>
+
+<h2>
+<a name="2-how-to-use-it" class="anchor" href="#2-how-to-use-it"><span class="octicon octicon-link"></span></a>2. How to use it?</h2>
+
+<p>Assume you have these bean classes:</p>
+
+<div class="highlight highlight-java"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Organization</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="n">Address</span> <span class="n">address</span><span class="o">;</span>
+<span class="o">}</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Address</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">city</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">street</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">zip</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="nf">Address</span><span class="o">()</span> <span class="o">{</span> <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+<p>You can easily fill up an organization like this:</p>
+
+<div class="highlight highlight-java"><pre><span class="kn">import</span> <span class="nn">static</span> <span class="n">hu</span><span class="o">.</span><span class="na">juranyi</span><span class="o">.</span><span class="na">zsolt</span><span class="o">.</span><span class="na">objectmapper</span><span class="o">.</span><span class="na">ObjectMapper</span><span class="o">.*;</span>
+
+<span class="c1">// ...</span>
+
+<span class="n">Organization</span> <span class="n">org</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Organization</span><span class="o">();</span>
+<span class="n">set</span><span class="o">(</span><span class="n">org</span><span class="o">,</span> <span class="s">"name"</span><span class="o">,</span> <span class="s">"CJ Holding"</span><span class="o">);</span>
+<span class="n">set</span><span class="o">(</span><span class="n">org</span><span class="o">,</span> <span class="s">"address.city"</span><span class="o">,</span> <span class="s">"Los Santos"</span><span class="o">);</span>
+<span class="n">set</span><span class="o">(</span><span class="n">org</span><span class="o">,</span> <span class="s">"address.street"</span><span class="o">,</span> <span class="s">"Grove Street 2."</span><span class="o">);</span>
+<span class="n">set</span><span class="o">(</span><span class="n">org</span><span class="o">,</span> <span class="s">"address.zip"</span><span class="o">,</span> <span class="s">"WTF-42"</span><span class="o">);</span>
+
+<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">get</span><span class="o">(</span><span class="n">org</span><span class="o">,</span> <span class="s">"address.city"</span><span class="o">));</span> <span class="c1">// Los Santos</span>
+</pre></div>
+
+<p>You don't have to:</p>
+
+<ul>
+<li>define getter/setter methods</li>
+<li>get the address object</li>
+<li>create the address object</li>
+</ul><p>You just need to:</p>
+
+<ul>
+<li>define a no-parameter constructor in Address</li>
+<li>import ObjectMapper.*</li>
+<li>call get/set methods</li>
+</ul><p><code>get()</code> and <code>set()</code> methods have various parameter list, just check the <a href="https://github.com/juzraai/ObjectMapper/blob/master/src/main/java/hu/juranyi/zsolt/objectmapper/ObjectMapper.java">code</a>! :-) There are also <code>list()</code> methods which list all properties from an <em>Object</em> or <em>Class</em>.</p>
+
+<h2>
+<a name="3-limitations" class="anchor" href="#3-limitations"><span class="octicon octicon-link"></span></a>3. Limitations</h2>
+
+<p><em>ObjectMapper</em> queries the static type of fields, so if you have a <em>MyAddress</em> class which extends <em>Address</em> and has an additional field, e.g. "phone", this will not work:</p>
+
+<div class="highlight highlight-java"><pre><span class="n">set</span><span class="o">(</span><span class="n">org</span><span class="o">,</span> <span class="s">"address"</span><span class="o">,</span> <span class="k">new</span> <span class="n">MyAddress</span><span class="o">());</span> <span class="c1">// it's okay</span>
+<span class="n">set</span><span class="o">(</span><span class="n">org</span><span class="o">,</span> <span class="s">"address.phone"</span><span class="o">,</span> <span class="s">"12345678"</span><span class="o">);</span> <span class="c1">// invalid property, because type of "address" is Address</span>
+</pre></div>
+
+<p>And also you cannot handle elements of collections this way. (But maybe in the future :-))</p>
+
+<p>The other limitation is that you need to <strong>define explicitly a no-parameter constructor</strong> in every class that appear as type of properties.</p>
+
+<h2>
+<a name="4-usage-examples" class="anchor" href="#4-usage-examples"><span class="octicon octicon-link"></span></a>4. Usage examples</h2>
+
+<p>With this tool you can easily turn your <em>Object</em> into a <em>Map</em> and back, this can be useful for exporting an <em>Object</em> or many of them into a readable format, e.g. CSV.</p>
+
+<p>I use this tool also for building up an <em>Object</em> from a text matching a regexp, which contains named groups which are actually property names. :-)</p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">ObjectMapper maintained by <a href="https://github.com/juzraai">juzraai</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-41050675-5");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+
+  </body>
+</html>
