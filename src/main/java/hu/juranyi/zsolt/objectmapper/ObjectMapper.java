@@ -2,7 +2,6 @@ package hu.juranyi.zsolt.objectmapper;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +18,16 @@ import java.util.Map;
  * 
  */
 public class ObjectMapper {
+
+	// TODO use cache in list(Class) method, be careful with prefix param!
+
+	/**
+	 * 
+	 * @return A copy of default ignore list used by lister methods.
+	 */
+	public static List<String> defaultIgnoreList() {
+		return Lister.defaultIgnoreList();
+	}
 
 	/**
 	 * Gets all the properties with its values from the given object.
@@ -124,118 +133,108 @@ public class ObjectMapper {
 	 * i
 	 * </pre>
 	 * 
-	 * @param c
+	 * @param object
 	 *            Source class to map.
 	 * @return List of all properties in the class.
 	 */
-	public static List<String> list(Class<?> c) {
-		return list(c, null);
+	/**
+	 * Lists all properties from the given Object. If the Object is a Class,
+	 * list() will map the static types the Class object holds, otherwise it
+	 * queries the actual types from the Object. list() will recursively gather
+	 * all properties from fields, as well as from their supertypes. It will use
+	 * the default class name ignore list which contains only the "java\..*"
+	 * pattern.<br />
+	 * <br />
+	 * Example:
+	 * 
+	 * <pre style="margin-bottom:0px">
+	 * class A {
+	 * 	B b;
+	 * 	int i;
+	 * }
+	 * 
+	 * class B {
+	 * 	int j;
+	 * }
+	 * </pre>
+	 * 
+	 * <code>listProperties(A.class)</code> will return:
+	 * 
+	 * <pre style="margin-bottom:0px">
+	 * b
+	 * b.j
+	 * i
+	 * </pre>
+	 * 
+	 * @param object
+	 *            Source Object or Class to map.
+	 * @return List of all (not ignored) properties in the given Object or
+	 *         Class.
+	 */
+	public static List<String> list(Object object) {
+		return list(object, null, null);
 	}
 
 	/**
-	 * Same as list(Class), except you can add a prefix for all the propery
-	 * names.
+	 * Lists all properties from the given Object. If the Object is a Class,
+	 * list() will map the static types the Class object holds, otherwise it
+	 * queries the actual types from the Object. list() will recursively gather
+	 * all properties from fields, as well as from their supertypes.You can
+	 * specify a list of class name patterns to tell list() not to map matching
+	 * classes recursively.
 	 * 
-	 * @param c
-	 *            Source class to map.
+	 * @param object
+	 *            Source Object or Class to map.
+	 * 
+	 * @param ignoreClasses
+	 *            List of class name patterns you don't want to map recursively.
+	 * @return List of all (not ignored) properties in the given Object or
+	 *         Class, with the given prefix.
+	 */
+	public static List<String> list(Object object, List<String> ignoreClasses) {
+		return Lister.list(object, null, ignoreClasses);
+	}
+
+	/**
+	 * Lists all properties from the given Object. If the Object is a Class,
+	 * list() will map the static types the Class object holds, otherwise it
+	 * queries the actual types from the Object. list() will recursively gather
+	 * all properties from fields, as well as from their supertypes. You can
+	 * specify a prefix for all property names. It will use the default class
+	 * name ignore list which contains only the "java\..*" pattern.
+	 * 
+	 * @param object
+	 *            Source Object or Class to map.
 	 * @param rootName
-	 *            Prefix of property names, without the dot!
-	 * @return List of all properties in the class.
+	 *            Prefix for all property names (without dot at the end).
+	 * @return List of all (not ignored) properties in the given Object or
+	 *         Class, with the given prefix.
 	 */
-	public static List<String> list(Class<?> c, String rootName) {
-		List<String> p = new ArrayList<String>();
-
-		if (null == c) {
-			return p;
-		}
-
-		// go thru fields
-		for (Field f : c.getDeclaredFields()) {
-
-			// get and build name
-			String n = f.getName();
-			if (null != rootName && !rootName.isEmpty()) {
-				n = String.format("%s.%s", rootName, n);
-			}
-
-			// get STATIC type
-			Class<?> t = f.getType();
-
-			// add to list
-			p.add(n);
-
-			// map recursively
-			if (!t.getName().startsWith("java.")) {
-				p.addAll(list(t, n));
-				p.addAll(list(t.getSuperclass(), n));
-			}
-		}
-		return p;
+	public static List<String> list(Object object, String rootName) {
+		return list(object, rootName, null);
 	}
 
 	/**
-	 * Lists the properties of an object recursively. "java.*" classes will not
-	 * be mapped. It maps the actual types of the fields, not the static.
+	 * Lists all properties from the given Object. If the Object is a Class,
+	 * list() will map the static types the Class object holds, otherwise it
+	 * queries the actual types from the Object. list() will recursively gather
+	 * all properties from fields, as well as from their supertypes. You can
+	 * specify a prefix for all property names. Also you can specify a list of
+	 * class name patterns to tell list() not to map matching classes
+	 * recursively.
 	 * 
-	 * @param o
-	 *            Source object to map.
-	 * @return List of all properties in the object.
-	 */
-	public static List<String> list(Object o) {
-		return list(o, null);
-	}
-
-	/**
-	 * Same as list(Object), except you can add a prefix for all the propery
-	 * names.
-	 * 
-	 * @param o
-	 *            Source object to map.
+	 * @param object
+	 *            Source Object or Class to map.
 	 * @param rootName
-	 *            Prefix of property names, without the dot!
-	 * @return List of all properties in the object.
+	 *            Prefix for all property names (without dot at the end).
+	 * @param ignoreClasses
+	 *            List of class name patterns you don't want to map recursively.
+	 * @return List of all (not ignored) properties in the given Object or
+	 *         Class, with the given prefix.
 	 */
-	public static List<String> list(Object o, String rootName) {
-		List<String> p = new ArrayList<String>();
-
-		if (null == o) {
-			return p;
-		}
-
-		// go thru fields
-		for (Field f : o.getClass().getDeclaredFields()) {
-
-			// get and build name name
-			String n = f.getName();
-			if (null != rootName && !rootName.isEmpty()) {
-				n = String.format("%s.%s", rootName, n);
-			}
-
-			// get ACTUAL type if possible
-			Object v = null;
-			Class<?> t;
-			f.setAccessible(true);
-			try {
-				v = f.get(o);
-				t = v.getClass();
-			} catch (Exception e) {
-				t = f.getType();
-			}
-
-			// add to list
-			p.add(n);
-
-			// map recursively
-			if (!t.getName().startsWith("java.")) {
-				if (null == v) {
-					p.addAll(list(t, n)); // by Class
-				} else {
-					p.addAll(list(v, n)); // by Object
-				}
-				p.addAll(list(t.getSuperclass(), n));
-			}
-		}
-		return p;
+	public static List<String> list(Object object, String rootName,
+			List<String> ignoreClasses) {
+		return Lister.list(object, rootName, ignoreClasses);
 	}
 
 	/**

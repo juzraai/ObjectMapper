@@ -3,15 +3,16 @@
 
 ---
 
-* [Whats' this?](#1-whats-this)
-* [How to use it?](#2-how-to-use-it)
-* [How does it work?](#3-how-does-it-work)
-* [Limitations](#4-limitations)
-* [Usage examples](#5-usage-examples)
+* [Whats' this?](#whats-this)
+* [How to use it?](#how-to-use-it)
+* [How does it work?](#how-does-it-work)
+* [Features](#features)
+* [Limitations](#limitations)
+* [Usage examples](#usage-examples)
 
 ---
 
-## 1. What's this?
+## What's this?
 
 *ObjectMapper* **helps you** simplify the handling of nested beans, by providing
 getter and setter methods which **work with property names**. So it is basically
@@ -20,7 +21,7 @@ a lightweight alternative to [Spring's BeanWrapper](http://docs.spring.io/spring
 
 
 
-## 2. How to use it?
+## How to use it?
 
 Assume you have these bean classes:
 
@@ -71,7 +72,8 @@ You just need to:
 * import `ObjectMapper.*`
 * call `get()`/`set()` methods
 
-Let's see a more interesting example! Assume you have an extended address class too:
+Let's see a more interesting example! Assume you have an extended address class 
+too:
 
 ```java
 public class AddressEx extends Address {
@@ -89,22 +91,9 @@ set(org, "address.phone", "123456789");
 assertEquals("123456789", get(org, "address.phone"));
 ```
 
-`get()` and `set()` methods have various parameter lists, and there are also
-`list()` methods which list all properties from an *Object* or *Class*:
-
-* `Object get(Object, String)` - retrieve a single property
-* `Map<String, Object> get(Object)` - translates your *Object* into a *Map*
-* `Map<String, Object> get(Object, List<String>)` - gathers a bunch of properties into a *Map*
-
-* `boolean set(Object, String, Object)` - sets a single property
-* `boolean set(Object, Map<String, Object>)` - sets a bunch of properties
-
-* `List<String> list(Object)` - lists all properties based on actual types
-* `List<String> list(Class)` - lists all properties based on static types
 
 
-
-## 3. How does it work?
+## How does it work?
 
 *ObjectMapper* does not store anything, it simply uses [Java Reflection API](http://docs.oracle.com/javase/tutorial/reflect/)
 to access the declared fields, retrieve their type and value or set them.
@@ -115,7 +104,7 @@ This call:
 set(org, "address.city", "Los Santos");
 ```
 
-does the same as:
+has the same effect as:
 
 ```java
 Address a = org.getAddress();
@@ -132,7 +121,7 @@ And this one:
 Object o = get(org, "address.city");
 ```
 
-does the same as:
+has the same effect as:
 
 ```
 Object o = org.getAddress();
@@ -141,24 +130,46 @@ if (null != o) {
 }
 ```
 
-So when a property is not readable (e.g. `address` is `null` so `address.city` is
-not accessible) it drops back `null`.
+So when a property is not readable (e.g. `address` is `null` so `address.city` 
+is not accessible) it drops back `null`.
 
 If any error occurs when setting a property (e.g. there's no proper constructor
 or field), `set()` methods will return `false`.
 
 
 
-## 4. Limitations
+## Features
+
+`get()` and `set()` methods have various parameter lists, and there are also
+`list()` methods which list all properties from an *Object* or *Class*:
+
+* getters
+	* `Object get(Object, String)` - retrieve a single property
+	* `Map<String, Object> get(Object)` - retrieve all property = translates 
+	your *Object* into a *Map*
+	* `Map<String, Object> get(Object, List<String>)` - retrueve a bunch of 
+	properties
+* setters
+	* `boolean set(Object, String, Object)` - sets a single property
+	* `boolean set(Object, Map<String, Object>)` - sets a bunch of properties
+* listers
+	* `List<String> list(Object)` - lists all properties based on actual or 
+	static types (static when Object is a Class)
+	* `List<String> list(Object, String)` - you can add prefix
+	* `List<String> list(Object, List<String>)` - you can define your own ignore
+	list for class names
+	* `List<String> list(Object, String, List<String>)` - or both
+
+
+
+## Limitations
 
 You need to **define explicitly a no-parameter constructor** in every class that
-appear as type of properties.
-
-*ObjectMapper* cannot handle elements of collections. (But maybe in the future :-))
+appear as type of properties OR build up your property paths manually.
 
 
 
-## 5. Usage examples
+## Usage examples
 
 With this tool you can easily turn your *Object* into a *Map* and back, this can
 be useful for exporting an *Object* or many of them into a readable format, e.g.
@@ -166,3 +177,15 @@ CSV.
 
 I use this tool also for building up an *Object* from a text matching a regexp,
 which contains named groups which are actually property names. :-)
+
+
+
+## Future plans
+
+**Handling collections** would be awesome. Property names would contain brackets and
+can specify an index or key in a collection. Also it would be great if there
+were a solution to add an element to a list, then reference it in further
+property setters without knowing its index.
+
+And maybe a **caching** feature for Class based listing would be useful: it would
+increase the speed of further queries.
