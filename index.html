@@ -36,7 +36,13 @@
 
 <p><strong>Properties in Java! ;-)</strong></p>
 
-<hr><h2>
+<hr><ul>
+<li><a href="#1-whats-this">Whats' this?</a></li>
+<li><a href="#2-how-to-use-it">How to use it?</a></li>
+<li><a href="#3-how-does-it-work">How does it work?</a></li>
+<li><a href="#4-limitations">Limitations</a></li>
+<li><a href="#5-usage-examples">Usage examples</a></li>
+</ul><hr><h2>
 <a name="1-whats-this" class="anchor" href="#1-whats-this"><span class="octicon octicon-link"></span></a>1. What's this?</h2>
 
 <p><em>ObjectMapper</em> <strong>helps you</strong> simplify the handling of nested beans, by providing
@@ -74,7 +80,7 @@ a lightweight alternative to <a href="http://docs.spring.io/spring/docs/4.0.5.RE
 <span class="n">set</span><span class="o">(</span><span class="n">org</span><span class="o">,</span> <span class="s">"address.street"</span><span class="o">,</span> <span class="s">"Grove Street 2."</span><span class="o">);</span>
 <span class="n">set</span><span class="o">(</span><span class="n">org</span><span class="o">,</span> <span class="s">"address.zip"</span><span class="o">,</span> <span class="s">"WTF-42"</span><span class="o">);</span>
 
-<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">get</span><span class="o">(</span><span class="n">org</span><span class="o">,</span> <span class="s">"address.city"</span><span class="o">));</span> <span class="c1">// Los Santos</span>
+<span class="n">assertEquals</span><span class="o">(</span><span class="s">"Los Santos"</span><span class="o">,</span> <span class="n">get</span><span class="o">(</span><span class="n">org</span><span class="o">,</span> <span class="s">"address.city"</span><span class="o">));</span>
 
 <span class="c1">// if you have proper getters and setters:</span>
 <span class="n">assertNotNull</span><span class="o">(</span><span class="n">org</span><span class="o">.</span><span class="na">getAddress</span><span class="o">());</span>
@@ -91,7 +97,8 @@ a lightweight alternative to <a href="http://docs.spring.io/spring/docs/4.0.5.RE
 </ul><p>You just need to:</p>
 
 <ul>
-<li>define a no-parameter constructor in Address</li>
+<li>define a no-parameter constructor in <em>Address</em>
+</li>
 <li>import <code>ObjectMapper.*</code>
 </li>
 <li>call <code>get()</code>/<code>set()</code> methods</li>
@@ -103,27 +110,29 @@ a lightweight alternative to <a href="http://docs.spring.io/spring/docs/4.0.5.RE
 
 </pre></div>
 
-<p>Even when the static type of <code>org.address</code> is <em>Address</em>, you can do this:</p>
+<p>Even when the static type of <code>address</code> is <em>Address</em>, you can do this:</p>
 
 <div class="highlight highlight-java"><pre><span class="n">set</span><span class="o">(</span><span class="n">org</span><span class="o">,</span> <span class="s">"address"</span><span class="o">,</span> <span class="k">new</span> <span class="n">AddressEx</span><span class="o">());</span>
 <span class="n">set</span><span class="o">(</span><span class="n">org</span><span class="o">,</span> <span class="s">"address.phone"</span><span class="o">,</span> <span class="s">"123456789"</span><span class="o">);</span>
-<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">get</span><span class="o">(</span><span class="n">org</span><span class="o">,</span> <span class="s">"address.phone"</span><span class="o">));</span> <span class="c1">// 123456789</span>
+
+<span class="n">assertEquals</span><span class="o">(</span><span class="s">"123456789"</span><span class="o">,</span> <span class="n">get</span><span class="o">(</span><span class="n">org</span><span class="o">,</span> <span class="s">"address.phone"</span><span class="o">));</span>
 </pre></div>
 
-<p><code>get()</code> and <code>set()</code> methods have various parameter lists, and there are also <code>list()</code> methods which list all properties from an <em>Object</em> or <em>Class</em>:</p>
+<p><code>get()</code> and <code>set()</code> methods have various parameter lists, and there are also
+<code>list()</code> methods which list all properties from an <em>Object</em> or <em>Class</em>:</p>
 
 <ul>
 <li>
 <code>Object get(Object, String)</code> - retrieve a single property</li>
 <li>
-<code>Map&lt;String, Object&gt; get(Object)</code> - translates your <code>Object</code> into a <code>Map</code>
+<code>Map&lt;String, Object&gt; get(Object)</code> - translates your <em>Object</em> into a <em>Map</em>
 </li>
-<li><p><code>Map&lt;String, Object&gt; get(Object, List&lt;String&gt;)</code> - gathers a bunch of properties into a <code>Map</code></p></li>
+<li><p><code>Map&lt;String, Object&gt; get(Object, List&lt;String&gt;)</code> - gathers a bunch of properties into a <em>Map</em></p></li>
 <li><p><code>boolean set(Object, String, Object)</code> - sets a single property</p></li>
 <li><p><code>boolean set(Object, Map&lt;String, Object&gt;)</code> - sets a bunch of properties</p></li>
-<li><p><code>List&lt;String&gt; list(Object)</code> - lists all properties <em>(currently only calls list(Class))</em></p></li>
+<li><p><code>List&lt;String&gt; list(Object)</code> - lists all properties based on actual types</p></li>
 <li>
-<code>List&lt;String&gt; list(Class)</code> - lists all properties</li>
+<code>List&lt;String&gt; list(Class)</code> - lists all properties based on static types</li>
 </ul><h2>
 <a name="3-how-does-it-work" class="anchor" href="#3-how-does-it-work"><span class="octicon octicon-link"></span></a>3. How does it work?</h2>
 
@@ -158,7 +167,7 @@ if (null != o) {
 }
 </code></pre>
 
-<p>So when a property is not readable (e.g. <code>address</code> is null so <code>address.city</code> is
+<p>So when a property is not readable (e.g. <code>address</code> is <code>null</code> so <code>address.city</code> is
 not accessible) it drops back <code>null</code>.</p>
 
 <p>If any error occurs when setting a property (e.g. there's no proper constructor
