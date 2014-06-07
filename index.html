@@ -4,11 +4,11 @@
   <head>
     <meta charset='utf-8' />
     <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <meta name="description" content="ObjectMapper : Properties in Java! ;-)" />
+    <meta name="description" content="ObjectMapper by juzraai : Properties in Java! ;-)" />
 
     <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
 
-    <title>ObjectMapper</title>
+    <title>ObjectMapper by juzraai</title>
   </head>
 
   <body>
@@ -18,7 +18,7 @@
         <header class="inner">
           <a id="forkme_banner" href="https://github.com/juzraai/ObjectMapper">View on GitHub</a>
 
-          <h1 id="project_title">ObjectMapper</h1>
+          <h1 id="project_title">ObjectMapper by juzraai</h1>
           <h2 id="project_tagline">Properties in Java! ;-)</h2>
 
             <section id="downloads">
@@ -39,7 +39,10 @@
 <hr><h2>
 <a name="1-whats-this" class="anchor" href="#1-whats-this"><span class="octicon octicon-link"></span></a>1. What's this?</h2>
 
-<p><em>ObjectMapper</em> helps you simplify the handling of nested beans, by providing getter and setter methods which work with property names.</p>
+<p><em>ObjectMapper</em> <strong>helps you</strong> simplify the handling of nested beans, by providing
+getter and setter methods which <strong>work with property names</strong>. So it is basically
+a lightweight alternative to <a href="http://docs.spring.io/spring/docs/4.0.5.RELEASE/spring-framework-reference/htmlsingle/#beans-beans">Spring's BeanWrapper</a>.
+<em>ObjectMapper</em> has much less functions, but it's <strong>small</strong> and <strong>fast</strong>. :-)</p>
 
 <h2>
 <a name="2-how-to-use-it" class="anchor" href="#2-how-to-use-it"><span class="octicon octicon-link"></span></a>2. How to use it?</h2>
@@ -72,48 +75,119 @@
 <span class="n">set</span><span class="o">(</span><span class="n">org</span><span class="o">,</span> <span class="s">"address.zip"</span><span class="o">,</span> <span class="s">"WTF-42"</span><span class="o">);</span>
 
 <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">get</span><span class="o">(</span><span class="n">org</span><span class="o">,</span> <span class="s">"address.city"</span><span class="o">));</span> <span class="c1">// Los Santos</span>
+
+<span class="c1">// if you have proper getters and setters:</span>
+<span class="n">assertNotNull</span><span class="o">(</span><span class="n">org</span><span class="o">.</span><span class="na">getAddress</span><span class="o">());</span>
+<span class="n">assertEquals</span><span class="o">(</span><span class="s">"Los Santos"</span><span class="o">,</span> <span class="n">org</span><span class="o">.</span><span class="na">getAddress</span><span class="o">().</span><span class="na">getCity</span><span class="o">());</span>
 </pre></div>
 
 <p>You don't have to:</p>
 
 <ul>
 <li>define getter/setter methods</li>
+<li>set fields public</li>
 <li>get the address object</li>
 <li>create the address object</li>
 </ul><p>You just need to:</p>
 
 <ul>
 <li>define a no-parameter constructor in Address</li>
-<li>import ObjectMapper.*</li>
-<li>call get/set methods</li>
-</ul><p><code>get()</code> and <code>set()</code> methods have various parameter list, just check the <a href="https://github.com/juzraai/ObjectMapper/blob/master/src/main/java/hu/juranyi/zsolt/objectmapper/ObjectMapper.java">code</a>! :-) There are also <code>list()</code> methods which list all properties from an <em>Object</em> or <em>Class</em>.</p>
+<li>import <code>ObjectMapper.*</code>
+</li>
+<li>call <code>get()</code>/<code>set()</code> methods</li>
+</ul><p>Let's see a more interesting example! Assume you have an extended address class too:</p>
 
-<h2>
-<a name="3-limitations" class="anchor" href="#3-limitations"><span class="octicon octicon-link"></span></a>3. Limitations</h2>
+<div class="highlight highlight-java"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">AddressEx</span> <span class="kd">extends</span> <span class="n">Address</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">phone</span><span class="o">;</span>
+<span class="o">}</span>
 
-<p><em>ObjectMapper</em> queries the static type of fields, so if you have a <em>MyAddress</em> class which extends <em>Address</em> and has an additional field, e.g. "phone", this will not work:</p>
-
-<div class="highlight highlight-java"><pre><span class="n">set</span><span class="o">(</span><span class="n">org</span><span class="o">,</span> <span class="s">"address"</span><span class="o">,</span> <span class="k">new</span> <span class="n">MyAddress</span><span class="o">());</span> <span class="c1">// it's okay</span>
-<span class="n">set</span><span class="o">(</span><span class="n">org</span><span class="o">,</span> <span class="s">"address.phone"</span><span class="o">,</span> <span class="s">"12345678"</span><span class="o">);</span> <span class="c1">// invalid property, because type of "address" is Address</span>
 </pre></div>
 
-<p>And also you cannot handle elements of collections this way. (But maybe in the future :-))</p>
+<p>Even when the static type of <code>org.address</code> is <em>Address</em>, you can do this:</p>
 
-<p>The other limitation is that you need to <strong>define explicitly a no-parameter constructor</strong> in every class that appear as type of properties.</p>
+<div class="highlight highlight-java"><pre><span class="n">set</span><span class="o">(</span><span class="n">org</span><span class="o">,</span> <span class="s">"address"</span><span class="o">,</span> <span class="k">new</span> <span class="n">AddressEx</span><span class="o">());</span>
+<span class="n">set</span><span class="o">(</span><span class="n">org</span><span class="o">,</span> <span class="s">"address.phone"</span><span class="o">,</span> <span class="s">"123456789"</span><span class="o">);</span>
+<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">get</span><span class="o">(</span><span class="n">org</span><span class="o">,</span> <span class="s">"address.phone"</span><span class="o">));</span> <span class="c1">// 123456789</span>
+</pre></div>
+
+<p><code>get()</code> and <code>set()</code> methods have various parameter lists, and there are also <code>list()</code> methods which list all properties from an <em>Object</em> or <em>Class</em>:</p>
+
+<ul>
+<li>
+<code>Object get(Object, String)</code> - retrieve a single property</li>
+<li>
+<code>Map&lt;String, Object&gt; get(Object)</code> - translates your <code>Object</code> into a <code>Map</code>
+</li>
+<li><p><code>Map&lt;String, Object&gt; get(Object, List&lt;String&gt;)</code> - gathers a bunch of properties into a <code>Map</code></p></li>
+<li><p><code>boolean set(Object, String, Object)</code> - sets a single property</p></li>
+<li><p><code>boolean set(Object, Map&lt;String, Object&gt;)</code> - sets a bunch of properties</p></li>
+<li><p><code>List&lt;String&gt; list(Object)</code> - lists all properties <em>(currently only calls list(Class))</em></p></li>
+<li>
+<code>List&lt;String&gt; list(Class)</code> - lists all properties</li>
+</ul><h2>
+<a name="3-how-does-it-work" class="anchor" href="#3-how-does-it-work"><span class="octicon octicon-link"></span></a>3. How does it work?</h2>
+
+<p><em>ObjectMapper</em> does not store anything, it simply uses <a href="http://docs.oracle.com/javase/tutorial/reflect/">Java Reflection API</a>
+to access the declared fields, retrieve their type and value or set them.</p>
+
+<p>This call:</p>
+
+<div class="highlight highlight-java"><pre><span class="n">set</span><span class="o">(</span><span class="n">org</span><span class="o">,</span> <span class="s">"address.city"</span><span class="o">,</span> <span class="s">"Los Santos"</span><span class="o">);</span>
+</pre></div>
+
+<p>does the same as:</p>
+
+<div class="highlight highlight-java"><pre><span class="n">Address</span> <span class="n">a</span> <span class="o">=</span> <span class="n">org</span><span class="o">.</span><span class="na">getAddress</span><span class="o">();</span>
+<span class="k">if</span> <span class="o">(</span><span class="kc">null</span> <span class="o">==</span> <span class="n">a</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Address</span><span class="o">();</span>
+    <span class="n">org</span><span class="o">.</span><span class="na">setAddress</span><span class="o">(</span><span class="n">a</span><span class="o">);</span>
+<span class="o">}</span>
+<span class="n">a</span><span class="o">.</span><span class="na">setCity</span><span class="o">(</span><span class="s">"Los Santos"</span><span class="o">);</span>
+</pre></div>
+
+<p>And this one:</p>
+
+<div class="highlight highlight-java"><pre><span class="n">Object</span> <span class="n">o</span> <span class="o">=</span> <span class="n">get</span><span class="o">(</span><span class="n">org</span><span class="o">,</span> <span class="s">"address.city"</span><span class="o">);</span>
+</pre></div>
+
+<p>does the same as:</p>
+
+<pre><code>Object o = org.getAddress();
+if (null != o) {
+    o = ((Address) o).getCity();
+}
+</code></pre>
+
+<p>So when a property is not readable (e.g. <code>address</code> is null so <code>address.city</code> is
+not accessible) it drops back <code>null</code>.</p>
+
+<p>If any error occurs when setting a property (e.g. there's no proper constructor
+or field), <code>set()</code> methods will return <code>false</code>.</p>
 
 <h2>
-<a name="4-usage-examples" class="anchor" href="#4-usage-examples"><span class="octicon octicon-link"></span></a>4. Usage examples</h2>
+<a name="4-limitations" class="anchor" href="#4-limitations"><span class="octicon octicon-link"></span></a>4. Limitations</h2>
 
-<p>With this tool you can easily turn your <em>Object</em> into a <em>Map</em> and back, this can be useful for exporting an <em>Object</em> or many of them into a readable format, e.g. CSV.</p>
+<p>You need to <strong>define explicitly a no-parameter constructor</strong> in every class that
+appear as type of properties.</p>
 
-<p>I use this tool also for building up an <em>Object</em> from a text matching a regexp, which contains named groups which are actually property names. :-)</p>
+<p><em>ObjectMapper</em> cannot handle elements of collections. (But maybe in the future :-))</p>
+
+<h2>
+<a name="5-usage-examples" class="anchor" href="#5-usage-examples"><span class="octicon octicon-link"></span></a>5. Usage examples</h2>
+
+<p>With this tool you can easily turn your <em>Object</em> into a <em>Map</em> and back, this can
+be useful for exporting an <em>Object</em> or many of them into a readable format, e.g.
+CSV.</p>
+
+<p>I use this tool also for building up an <em>Object</em> from a text matching a regexp,
+which contains named groups which are actually property names. :-)</p>
       </section>
     </div>
 
     <!-- FOOTER  -->
     <div id="footer_wrap" class="outer">
       <footer class="inner">
-        <p class="copyright">ObjectMapper maintained by <a href="https://github.com/juzraai">juzraai</a></p>
+        <p class="copyright">ObjectMapper by juzraai maintained by <a href="https://github.com/juzraai">juzraai</a></p>
         <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
       </footer>
     </div>
