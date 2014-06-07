@@ -22,6 +22,10 @@ public class ObjectMapperTest {
 		}
 	}
 
+	private static class L1Ex extends L1 {
+		private int e = 39;
+	}
+
 	@Test
 	public void getSimpleProperty() {
 		assertEquals(23, ObjectMapper.get(new L0(), "i0"));
@@ -61,5 +65,14 @@ public class ObjectMapperTest {
 	@Test
 	public void setInvalidProperty() {
 		assertFalse(ObjectMapper.set(new Object(), "invalid", null));
+	}
+
+	@Test
+	public void handleDynamicType() {
+		L0 l0 = new L0();
+		ObjectMapper.set(l0, "l1", new L1Ex());
+		assertEquals(39, ObjectMapper.get(l0, "l1.e"));
+		ObjectMapper.set(l0, "l1.e", 73);
+		assertEquals(73, ObjectMapper.get(l0, "l1.e"));
 	}
 }

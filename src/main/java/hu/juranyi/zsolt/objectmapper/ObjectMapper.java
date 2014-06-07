@@ -8,8 +8,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Helps you simplify the handling of nested beans, by providing getter and
- * setter methods which work with property names.
+ * <i>ObjectMapper</i> <b>helps you</b> simplify the handling of nested beans,
+ * by providing getter and setter methods which <b>work with property names</b>.
+ * So it is basically a lightweight alternative to Spring's BeanWrapper.
+ * <i>ObjectMapper</i> has much less functions, but it's <b>small</b> and
+ * <b>fast</b>. :-)
  * 
  * @version 1.0.0
  * @author Zsolt Jurányi
@@ -174,6 +177,7 @@ public class ObjectMapper {
 	 * @return List of all properties in the object.
 	 */
 	public static List<String> list(Object o) {
+		// TODO It should list the actual types!
 		return list(o.getClass());
 	}
 
