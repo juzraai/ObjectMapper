@@ -145,17 +145,21 @@ public class ObjectMapper {
 	public static List<String> list(Class<?> c, String rootName) {
 		List<String> p = new ArrayList<String>();
 
+		if (null == c) {
+			return p;
+		}
+
 		// go thru fields
 		for (Field f : c.getDeclaredFields()) {
 
-			// get name and type
+			// get and build name
 			String n = f.getName();
-			Class<?> t = f.getType();
-
-			// add prefix
 			if (null != rootName && !rootName.isEmpty()) {
 				n = String.format("%s.%s", rootName, n);
 			}
+
+			// get STATIC type
+			Class<?> t = f.getType();
 
 			// add to list
 			p.add(n);
@@ -163,22 +167,75 @@ public class ObjectMapper {
 			// map recursively
 			if (!t.getName().startsWith("java.")) {
 				p.addAll(list(t, n));
+				p.addAll(list(t.getSuperclass(), n));
 			}
 		}
 		return p;
 	}
 
 	/**
-	 * Lists the properties of an object recursively. Technically it calls
-	 * listProperties(o.getClass()). More info at listProperties(Class).
+	 * Lists the properties of an object recursively. "java.*" classes will not
+	 * be mapped. It maps the actual types of the fields, not the static.
 	 * 
 	 * @param o
 	 *            Source object to map.
 	 * @return List of all properties in the object.
 	 */
 	public static List<String> list(Object o) {
-		// TODO It should list the actual types!
-		return list(o.getClass());
+		return list(o, null);
+	}
+
+	/**
+	 * Same as list(Object), except you can add a prefix for all the propery
+	 * names.
+	 * 
+	 * @param o
+	 *            Source object to map.
+	 * @param rootName
+	 *            Prefix of property names, without the dot!
+	 * @return List of all properties in the object.
+	 */
+	public static List<String> list(Object o, String rootName) {
+		List<String> p = new ArrayList<String>();
+
+		if (null == o) {
+			return p;
+		}
+
+		// go thru fields
+		for (Field f : o.getClass().getDeclaredFields()) {
+
+			// get and build name name
+			String n = f.getName();
+			if (null != rootName && !rootName.isEmpty()) {
+				n = String.format("%s.%s", rootName, n);
+			}
+
+			// get ACTUAL type if possible
+			Object v = null;
+			Class<?> t;
+			f.setAccessible(true);
+			try {
+				v = f.get(o);
+				t = v.getClass();
+			} catch (Exception e) {
+				t = f.getType();
+			}
+
+			// add to list
+			p.add(n);
+
+			// map recursively
+			if (!t.getName().startsWith("java.")) {
+				if (null == v) {
+					p.addAll(list(t, n)); // by Class
+				} else {
+					p.addAll(list(v, n)); // by Object
+				}
+				p.addAll(list(t.getSuperclass(), n));
+			}
+		}
+		return p;
 	}
 
 	/**

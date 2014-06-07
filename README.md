@@ -3,7 +3,13 @@
 
 ---
 
+* [Whats' this?](#1-whats-this)
+* [How to use it?](#2-how-to-use-it)
+* [How does it work?](#3-how-does-it-work)
+* [Limitations](#4-limitations)
+* [Usage examples](#5-usage-examples)
 
+---
 
 ## 1. What's this?
 
@@ -45,7 +51,7 @@ set(org, "address.city", "Los Santos");
 set(org, "address.street", "Grove Street 2.");
 set(org, "address.zip", "WTF-42");
 
-System.out.println(get(org, "address.city")); // Los Santos
+assertEquals("Los Santos", get(org, "address.city"));
 
 // if you have proper getters and setters:
 assertNotNull(org.getAddress());
@@ -61,7 +67,7 @@ You don't have to:
 
 You just need to:
 
-* define a no-parameter constructor in Address
+* define a no-parameter constructor in *Address*
 * import `ObjectMapper.*`
 * call `get()`/`set()` methods
 
@@ -74,25 +80,27 @@ public class AddressEx extends Address {
 
 ```
 
-Even when the static type of `org.address` is *Address*, you can do this:
+Even when the static type of `address` is *Address*, you can do this:
 
 ```java
 set(org, "address", new AddressEx());
 set(org, "address.phone", "123456789");
-System.out.println(get(org, "address.phone")); // 123456789
+
+assertEquals("123456789", get(org, "address.phone"));
 ```
 
-`get()` and `set()` methods have various parameter lists, and there are also `list()` methods which list all properties from an *Object* or *Class*:
+`get()` and `set()` methods have various parameter lists, and there are also
+`list()` methods which list all properties from an *Object* or *Class*:
 
 * `Object get(Object, String)` - retrieve a single property
-* `Map<String, Object> get(Object)` - translates your `Object` into a `Map`
-* `Map<String, Object> get(Object, List<String>)` - gathers a bunch of properties into a `Map`
+* `Map<String, Object> get(Object)` - translates your *Object* into a *Map*
+* `Map<String, Object> get(Object, List<String>)` - gathers a bunch of properties into a *Map*
 
 * `boolean set(Object, String, Object)` - sets a single property
 * `boolean set(Object, Map<String, Object>)` - sets a bunch of properties
 
-* `List<String> list(Object)` - lists all properties *(currently only calls list(Class))*
-* `List<String> list(Class)` - lists all properties
+* `List<String> list(Object)` - lists all properties based on actual types
+* `List<String> list(Class)` - lists all properties based on static types
 
 
 
@@ -133,7 +141,7 @@ if (null != o) {
 }
 ```
 
-So when a property is not readable (e.g. `address` is null so `address.city` is
+So when a property is not readable (e.g. `address` is `null` so `address.city` is
 not accessible) it drops back `null`.
 
 If any error occurs when setting a property (e.g. there's no proper constructor

@@ -5,6 +5,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.List;
+
 import org.junit.Test;
 
 public class ObjectMapperTest {
@@ -74,5 +76,30 @@ public class ObjectMapperTest {
 		assertEquals(39, ObjectMapper.get(l0, "l1.e"));
 		ObjectMapper.set(l0, "l1.e", 73);
 		assertEquals(73, ObjectMapper.get(l0, "l1.e"));
+	}
+
+	@Test
+	public void listFromClass() {
+		List<String> list = ObjectMapper.list(L0.class);
+		assertTrue(list.contains("i0"));
+		assertTrue(list.contains("l1"));
+		assertTrue(list.contains("l1.i1"));
+		assertTrue(list.contains("l1b"));
+		assertTrue(list.contains("l1b.i1"));
+		assertEquals(5, list.size());
+	}
+
+	@Test
+	public void listFromObject() {
+		L0 l0 = new L0();
+		ObjectMapper.set(l0, "l1b", new L1Ex());
+		List<String> list = ObjectMapper.list(l0);
+		assertTrue(list.contains("i0"));
+		assertTrue(list.contains("l1"));
+		assertTrue(list.contains("l1.i1"));
+		assertTrue(list.contains("l1b"));
+		assertTrue(list.contains("l1b.i1"));
+		assertTrue(list.contains("l1b.e")); // dynamic type
+		assertEquals(6, list.size());
 	}
 }
