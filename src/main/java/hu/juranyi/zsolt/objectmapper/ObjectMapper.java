@@ -19,10 +19,6 @@ import java.util.Map;
  */
 public class ObjectMapper {
 
-	// TODO getField(Object, String) method
-
-	// TODO use cache in list(Class) method, be careful with prefix param!
-
 	/**
 	 * 
 	 * @return A copy of default ignore list used by lister methods.
@@ -288,6 +284,13 @@ public class ObjectMapper {
 	 * @return True if the operations was successful, false otherwise.
 	 */
 	public static boolean set(Object rootObject, String property, Object value) {
+
+		// TODO this would be great, but needs property building!
+		// Property p = Getter.getProperty(rootObject, property);
+		// if (null != p) {
+		// return p.set(value);
+		// }
+
 		try {
 			// start in the root object
 			Object o = rootObject;

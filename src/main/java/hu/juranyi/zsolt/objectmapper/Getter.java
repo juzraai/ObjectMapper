@@ -12,7 +12,7 @@ class Getter {
 
 	static Object get(Object object, String property) {
 		Property p = getProperty(object, property);
-		return (null == p) ? null : p.value();
+		return (null == p) ? null : p.get();
 	}
 
 	static Field getField(Object object, String property) {

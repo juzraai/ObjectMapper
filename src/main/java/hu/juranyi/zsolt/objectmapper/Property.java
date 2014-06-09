@@ -18,12 +18,22 @@ public class Property {
 		this.field = field;
 	}
 
-	public Object value() {
+	public Object get() {
 		try {
 			field.setAccessible(true);
 			return field.get(owner);
 		} catch (Exception ex) {
 			return null;
+		}
+	}
+
+	public boolean set(Object value) {
+		try {
+			field.setAccessible(true);
+			field.set(owner, value);
+			return true;
+		} catch (Exception ex) {
+			return false;
 		}
 	}
 }

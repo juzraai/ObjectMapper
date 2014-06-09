@@ -149,6 +149,7 @@ or field), `set()` methods will return `false`.
 	your *Object* into a *Map*
 	* `Map<String, Object> get(Object, List<String>)` - retrueve a bunch of 
 	properties
+	* `Field get(Object, String)` - retrieve the Field under a property name
 * setters
 	* `boolean set(Object, String, Object)` - sets a single property
 	* `boolean set(Object, Map<String, Object>)` - sets a bunch of properties
