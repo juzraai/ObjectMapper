@@ -154,7 +154,7 @@ or field), `set()` methods will return `false`.
 	* `boolean set(Object, Map<String, Object>)` - sets a bunch of properties
 * listers
 	* `List<String> list(Object)` - lists all properties based on actual or 
-	static types (static when Object is a Class)
+	static types (static when *Object* is a *Class*)
 	* `List<String> list(Object, String)` - you can add prefix
 	* `List<String> list(Object, List<String>)` - you can define your own ignore
 	list for class names

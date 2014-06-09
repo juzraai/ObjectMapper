@@ -6,6 +6,7 @@ import java.util.List;
 
 /**
  * 
+ * @since 1.1.0
  * @author Zsolt Jurányi
  * 
  */
@@ -17,11 +18,11 @@ class Lister {
 		DEFAULT_IGNORED_CLASSES.add("java\\..*");
 	}
 
-	public static List<String> defaultIgnoreList() {
+	static List<String> defaultIgnoreList() {
 		return new ArrayList<String>(DEFAULT_IGNORED_CLASSES);
 	}
 
-	private static boolean ignoredClass(Class<?> c, List<String> i) {
+	static boolean ignoredClass(Class<?> c, List<String> i) {
 		boolean r = false;
 		for (int k = 0; k < i.size() && !r; k++) {
 			r = c.getName().matches(i.get(k));
@@ -29,7 +30,7 @@ class Lister {
 		return r;
 	}
 
-	public static List<String> list(Object object, String rootName,
+	static List<String> list(Object object, String rootName,
 			List<String> ignoredClasses) {
 		List<String> props = new ArrayList<String>();
 
@@ -37,6 +38,8 @@ class Lister {
 			return props;
 		}
 		boolean objectIsAClass = object instanceof Class<?>;
+
+		// TODO if (objectIsAClass) -> use cache ;-) but be aware of prefix!
 
 		if (null == ignoredClasses) {
 			ignoredClasses = DEFAULT_IGNORED_CLASSES;
@@ -72,11 +75,16 @@ class Lister {
 			// map recursively
 			if (!ignoredClass(type, ignoredClasses)) {
 				if (null == value || objectIsAClass) {
-					props.addAll(list(type, name, ignoredClasses)); // by Class
+
+					// by Class
+					props.addAll(list(type, name, ignoredClasses));
 				} else {
-					props.addAll(list(value, name, ignoredClasses)); // by
-																		// Object
+
+					// by Object
+					props.addAll(list(value, name, ignoredClasses));
 				}
+
+				// map superclass
 				props.addAll(list(type.getSuperclass(), name, ignoredClasses));
 			}
 		}

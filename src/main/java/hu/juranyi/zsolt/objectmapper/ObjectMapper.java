@@ -19,6 +19,8 @@ import java.util.Map;
  */
 public class ObjectMapper {
 
+	// TODO getField(Object, String) method
+
 	// TODO use cache in list(Class) method, be careful with prefix param!
 
 	/**
@@ -87,25 +89,21 @@ public class ObjectMapper {
 	 *         property does not exist.
 	 */
 	public static Object get(Object rootObject, String property) {
-		try {
-			// start in the root object
-			Object o = rootObject;
+		return Getter.get(rootObject, property);
+	}
 
-			// go step by step on the property path
-			for (String p : property.split("\\.")) {
-
-				// get the field under current property
-				Field f = o.getClass().getDeclaredField(p);
-
-				// read its value and move on
-				f.setAccessible(true);
-				o = f.get(o);
-			}
-			return o;
-		} catch (Exception ex) {
-			// System.out.println("Could not get property: " + property);
-			return null;
-		}
+	/**
+	 * Gets the Field object laying under the giving property name in the
+	 * specified root object.
+	 * 
+	 * @param rootObject
+	 *            The object to read from.
+	 * @param property
+	 *            The name of the property you need, e.g. "a.b.c".
+	 * @return The Field object under the property name in the root object.
+	 */
+	public static Field getField(Object rootObject, String property) {
+		return Getter.getField(rootObject, property);
 	}
 
 	/**
@@ -192,7 +190,7 @@ public class ObjectMapper {
 	 *         Class, with the given prefix.
 	 */
 	public static List<String> list(Object object, List<String> ignoreClasses) {
-		return Lister.list(object, null, ignoreClasses);
+		return list(object, null, ignoreClasses);
 	}
 
 	/**
